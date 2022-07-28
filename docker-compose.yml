@@ -1,0 +1,36 @@
+version: "3.7"
+
+services:
+  database:
+    container_name: db
+    image: postgres:latest
+    restart: always
+    env_file:
+      - .env
+    ports:
+      - "5432:5432"
+    networks:
+      - bridge
+    volumes:
+      - data_db:/var/lib/postgresql/data
+  server:
+    container_name: todo
+    build:
+      context: .
+      dockerfile: Dockerfile
+    env_file: .env
+    depends_on:
+      - database
+    networks:
+      - bridge
+    ports:
+      - "8080:8080"
+    volumes:
+      - data_todo:/app
+volumes:
+  data_todo:
+  data_db:
+
+networks:
+  bridge:
+    driver: bridge
