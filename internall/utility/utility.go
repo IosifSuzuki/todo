@@ -19,7 +19,7 @@ func CheckHashPassword(password, hash string) bool {
 }
 
 func GenerateAccessToken(userId int, userName string) (string, error) {
-	expirationTime := time.Now().Add(1 * time.Minute)
+	expirationTime := time.Now().Add(24 * time.Hour)
 	claims := model.AccessClaims{
 		UserId:   userId,
 		UserName: userName,
@@ -33,7 +33,7 @@ func GenerateAccessToken(userId int, userName string) (string, error) {
 }
 
 func GenerateRefreshToken(userId int) (string, error) {
-	expirationTime := time.Now().Add(1 * time.Hour)
+	expirationTime := time.Now().Add(3 * 24 * time.Hour)
 	claims := model.RefreshClaims{
 		UserId: userId,
 		StandardClaims: jwt.StandardClaims{

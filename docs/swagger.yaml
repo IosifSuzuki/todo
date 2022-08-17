@@ -1,0 +1,487 @@
+basePath: /api/v1
+definitions:
+  model.AccountModel:
+    properties:
+      created-at:
+        type: string
+      email:
+        type: string
+      id:
+        type: integer
+      user-name:
+        type: string
+    type: object
+  model.Credentials:
+    properties:
+      access-token:
+        type: string
+      refresh-token:
+        type: string
+    type: object
+  model.Ping:
+    properties:
+      code:
+        type: integer
+      message:
+        type: string
+      user-id:
+        type: integer
+    type: object
+  model.Response:
+    properties:
+      code:
+        type: integer
+      message:
+        type: string
+    type: object
+  model.ResponseError:
+    properties:
+      code:
+        type: integer
+      message:
+        type: string
+    type: object
+  model.Todo:
+    properties:
+      closed:
+        type: boolean
+      created-on:
+        type: string
+      description:
+        type: string
+      id:
+        type: integer
+      title:
+        type: string
+      updated-on:
+        type: string
+    type: object
+  request.AuthenticationForm:
+    properties:
+      password:
+        type: string
+      user-name:
+        type: string
+    type: object
+  request.RegistrationForm:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+      user-name:
+        type: string
+    type: object
+  request.TodoForm:
+    properties:
+      description:
+        type: string
+      title:
+        type: string
+    type: object
+host: todo-app
+info:
+  contact:
+    email: iosifsuzuki@gmail.com
+    name: API Documentation Support
+    url: http://www.swagger.io/support
+  description: This is api documentation for todo
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: http://swagger.io/terms/
+  title: Todo API
+  version: "1.0"
+paths:
+  /account/user/{id}:
+    get:
+      consumes:
+      - application/json
+      description: get account info by id
+      operationId: get-user-info
+      parameters:
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: account id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.AccountModel'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.ResponseError'
+      security:
+      - ApiKeyAuth: []
+      summary: Get account info
+      tags:
+      - account
+  /account/users/:
+    get:
+      consumes:
+      - application/json
+      description: get accounts info
+      operationId: users-info-hanlder
+      parameters:
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: account id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.AccountModel'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.ResponseError'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/model.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.ResponseError'
+      security:
+      - ApiKeyAuth: []
+      summary: Get accounts info
+      tags:
+      - account
+  /authentication/refresh-token:
+    post:
+      consumes:
+      - application/json
+      operationId: sign-token-handler
+      parameters:
+      - description: form
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/model.Credentials'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.AccountModel'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.ResponseError'
+      summary: Refresh token flow
+      tags:
+      - authentication
+  /authentication/sign-in:
+    post:
+      consumes:
+      - application/json
+      operationId: sign-in-handler
+      parameters:
+      - description: form
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/request.AuthenticationForm'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.AccountModel'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.ResponseError'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/model.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.ResponseError'
+      summary: Sign in flow
+      tags:
+      - authentication
+  /authentication/sign-up:
+    post:
+      consumes:
+      - application/json
+      operationId: sign-up-handler
+      parameters:
+      - description: form
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/request.RegistrationForm'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.AccountModel'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.ResponseError'
+      summary: Sign up flow
+      tags:
+      - authentication
+  /todo/{id}:
+    get:
+      consumes:
+      - application/json
+      operationId: get-todo-handler
+      parameters:
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: todo id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Todo'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/model.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.ResponseError'
+      security:
+      - ApiKeyAuth: []
+      summary: Get todo by id
+      tags:
+      - todo
+  /todo/add:
+    post:
+      consumes:
+      - application/json
+      operationId: add-todo-handler
+      parameters:
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: form
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/request.TodoForm'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Todo'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/model.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.ResponseError'
+      security:
+      - ApiKeyAuth: []
+      summary: add new todo to my todo list
+      tags:
+      - todo
+  /todo/my/todos:
+    get:
+      consumes:
+      - application/json
+      operationId: my-todos-handler
+      parameters:
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.Todo'
+            type: array
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/model.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.ResponseError'
+      security:
+      - ApiKeyAuth: []
+      summary: Get my todos list server
+      tags:
+      - todo
+  /todo/ping:
+    get:
+      consumes:
+      - application/json
+      operationId: home-handler
+      parameters:
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Ping'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/model.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.ResponseError'
+      security:
+      - ApiKeyAuth: []
+      summary: Check connection to server through bearer token
+      tags:
+      - todo
+  /todo/remove/{id}:
+    delete:
+      consumes:
+      - application/json
+      operationId: remove-todo-handler
+      parameters:
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: todo id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Response'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/model.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.ResponseError'
+      security:
+      - ApiKeyAuth: []
+      summary: Remove todo by id
+      tags:
+      - todo
+  /todo/toggle/{id}:
+    put:
+      consumes:
+      - application/json
+      operationId: toggle-todo-handler
+      parameters:
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: todo id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Todo'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/model.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.ResponseError'
+      security:
+      - ApiKeyAuth: []
+      summary: Toggle todo by id
+      tags:
+      - todo
+schemes:
+- http
+- https
+securityDefinitions:
+  ApiKeyAuth:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"
